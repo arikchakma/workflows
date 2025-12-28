@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "lint": "echo skip lint",
+    "typecheck": "echo skip typecheck",
+    "build": "echo skip build",
+    "test": "echo skip test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}

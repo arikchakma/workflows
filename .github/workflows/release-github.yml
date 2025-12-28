@@ -1,0 +1,116 @@
+name: Release (GitHub Registry)
+
+on:
+  workflow_call:
+    inputs:
+      github-release:
+        description: Create GitHub release with changelog
+        required: false
+        type: boolean
+        default: true
+      publish:
+        description: Publish to GitHub Packages registry
+        required: false
+        type: boolean
+        default: false
+      build:
+        description: Build command to run before publish
+        required: false
+        type: string
+        default: ''
+      package-manager:
+        description: Package manager to use (pnpm or bun)
+        required: false
+        type: string
+        default: 'pnpm'
+      node-version:
+        description: Node.js version (for pnpm)
+        required: false
+        type: string
+        default: 'lts/*'
+      bun-version:
+        description: Bun version (for bun)
+        required: false
+        type: string
+        default: 'latest'
+      scope:
+        description: NPM scope for GitHub Packages (e.g., @myorg)
+        required: true
+        type: string
+      access:
+        description: Package access level (public or restricted)
+        required: false
+        type: string
+        default: 'public'
+      recursive:
+        description: Publish all workspace packages (pnpm only)
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        if: inputs.package-manager == 'pnpm'
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js for PNPM
+        if: inputs.package-manager == 'pnpm'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          registry-url: https://npm.pkg.github.com
+          scope: ${{ inputs.scope }}
+          cache: pnpm
+
+      - name: Setup Bun
+        if: inputs.package-manager == 'bun'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ inputs.bun-version }}
+
+      - name: Setup Node.js for Bun (registry config)
+        if: inputs.package-manager == 'bun'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          registry-url: https://npm.pkg.github.com
+          scope: ${{ inputs.scope }}
+
+      - name: Install dependencies (PNPM)
+        if: inputs.package-manager == 'pnpm'
+        run: pnpm install --frozen-lockfile
+
+      - name: Install dependencies (Bun)
+        if: inputs.package-manager == 'bun'
+        run: bun install --frozen-lockfile
+
+      - name: Generate changelog
+        if: inputs.github-release
+        run: ${{ inputs.package-manager == 'pnpm' && 'pnpx' || 'bunx' }} changelogithub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: inputs.build
+        run: ${{ inputs.build }}
+
+      - name: Publish to GitHub Packages (PNPM)
+        if: inputs.publish && inputs.package-manager == 'pnpm'
+        run: pnpm ${{ inputs.recursive && '-r' || '' }} publish --access ${{ inputs.access }} --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to GitHub Packages (Bun/NPM)
+        if: inputs.publish && inputs.package-manager == 'bun'
+        run: npm publish --access ${{ inputs.access }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

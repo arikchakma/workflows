@@ -1,0 +1,58 @@
+name: Release (Bun)
+
+on:
+  workflow_call:
+    inputs:
+      github-release:
+        description: Create GitHub release with changelog
+        required: false
+        type: boolean
+        default: true
+      publish:
+        description: Publish to NPM registry
+        required: false
+        type: boolean
+        default: false
+      build:
+        description: Build command to run before publish
+        required: false
+        type: string
+        default: ''
+      bun-version:
+        description: Bun version
+        required: false
+        type: string
+        default: 'latest'
+      access:
+        description: Package access level (public or restricted)
+        required: false
+        type: string
+        default: 'public'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: arikchakma/workflows/setup-js@v1
+        with:
+          package-manager: bun
+          bun-version: ${{ inputs.bun-version }}
+
+      - name: Generate changelog
+        if: inputs.github-release
+        run: bunx changelogithub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: inputs.build
+        run: ${{ inputs.build }}
+
+      - name: Publish to NPM
+        if: inputs.publish
+        run: npm publish --access ${{ inputs.access }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

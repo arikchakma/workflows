@@ -1,0 +1,61 @@
+name: Setup JS
+description: Setup JavaScript/TypeScript environment with Bun or PNPM
+
+inputs:
+  persist-credentials:
+    description: Git credentials persistence
+    default: 'false'
+  fetch-all:
+    description: Fetch all history
+    default: 'false'
+  node-version:
+    description: Node.js version (only for pnpm)
+    default: 'lts/*'
+  bun-version:
+    description: Bun version (only for bun)
+    default: 'latest'
+  auto-install:
+    description: Automatically install dependencies
+    default: 'true'
+  package-manager:
+    description: Package manager to use (pnpm or bun)
+    default: 'pnpm'
+  no-frozen-lockfile:
+    description: Disable frozen lockfile
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: ${{ inputs.persist-credentials }}
+        fetch-depth: ${{ inputs.fetch-all == 'true' && 0 || 1 }}
+
+    - name: Setup PNPM
+      if: inputs.package-manager == 'pnpm'
+      uses: pnpm/action-setup@v4
+
+    - name: Setup Node.js
+      if: inputs.package-manager == 'pnpm'
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: https://registry.npmjs.org
+        cache: pnpm
+
+    - name: Setup Bun
+      if: inputs.package-manager == 'bun'
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - name: Install dependencies (PNPM)
+      if: inputs.auto-install == 'true' && inputs.package-manager == 'pnpm'
+      shell: bash
+      run: pnpm install ${{ inputs.no-frozen-lockfile == 'false' && '--frozen-lockfile' || '' }}
+
+    - name: Install dependencies (Bun)
+      if: inputs.auto-install == 'true' && inputs.package-manager == 'bun'
+      shell: bash
+      run: bun install ${{ inputs.no-frozen-lockfile == 'false' && '--frozen-lockfile' || '' }}

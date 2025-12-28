@@ -1,0 +1,21 @@
+name: Release to GitHub Packages
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  release:
+    uses: arikchakma/workflows/.github/workflows/release-github.yml@v1
+    with:
+      publish: true
+      build: pnpm run build
+      package-manager: pnpm
+      scope: '@your-org'
+    secrets: inherit

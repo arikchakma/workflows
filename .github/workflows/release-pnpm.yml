@@ -1,0 +1,63 @@
+name: Release (PNPM)
+
+on:
+  workflow_call:
+    inputs:
+      github-release:
+        description: Create GitHub release with changelog
+        required: false
+        type: boolean
+        default: true
+      publish:
+        description: Publish to NPM registry
+        required: false
+        type: boolean
+        default: false
+      build:
+        description: Build command to run before publish
+        required: false
+        type: string
+        default: ''
+      node-version:
+        description: Node.js version
+        required: false
+        type: string
+        default: 'lts/*'
+      access:
+        description: Package access level (public or restricted)
+        required: false
+        type: string
+        default: 'public'
+      recursive:
+        description: Publish all workspace packages
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: arikchakma/workflows/setup-js@v1
+        with:
+          package-manager: pnpm
+          node-version: ${{ inputs.node-version }}
+
+      - name: Generate changelog
+        if: inputs.github-release
+        run: pnpx changelogithub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: inputs.build
+        run: ${{ inputs.build }}
+
+      - name: Publish to NPM
+        if: inputs.publish
+        run: pnpm ${{ inputs.recursive && '-r' || '' }} publish --access ${{ inputs.access }} --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
