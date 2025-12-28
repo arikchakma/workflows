@@ -1,23 +1,11 @@
-# arikchakma/workflows
+<div align="center">
+  <h2>Workflows</h2>
+  <p>Reusable GitHub Actions workflows for publishing packages with PNPM and Bun.</p>
+</div>
 
-Reusable GitHub Actions workflows for publishing packages with PNPM and Bun.
+### What Does It Do?
 
-## Features
-
-- Release workflows for both **PNPM** and **Bun** package managers
-- Publish to **NPM** or **GitHub Packages** registry
-- Composite setup action with caching support
-- Automatic changelog generation
-
-## Included Workflows
-
-- **Release (PNPM)**: Publish packages using PNPM to NPM registry
-- **Release (Bun)**: Publish packages using Bun to NPM registry
-- **Release (GitHub)**: Publish packages to GitHub Packages registry (supports both PNPM and Bun)
-
-## Usage
-
-Reference a workflow in your project's `.github/workflows/*.yml`:
+**Workflows** provides a collection of reusable GitHub Actions for releasing and publishing JavaScript/TypeScript packages. It supports both PNPM and Bun package managers, with options to publish to NPM or GitHub Packages registry.
 
 ```yaml
 name: Release
@@ -40,17 +28,23 @@ jobs:
     secrets: inherit
 ```
 
+### Included Workflows
+
+- **Release (PNPM)**: Publish packages using PNPM to NPM registry
+- **Release (Bun)**: Publish packages using Bun to NPM registry
+- **Release (GitHub)**: Publish packages to GitHub Packages registry (supports both PNPM and Bun)
+
 See the [`examples/`](./examples) folder for sample configurations:
 
 - [Release (PNPM)](./examples/release-pnpm.yml)
 - [Release (Bun)](./examples/release-bun.yml)
 - [Release (GitHub Packages)](./examples/release-github.yml)
 
-## Actions
+### Actions
 
 - [`setup-js/action.yml`](./setup-js/action.yml): Sets up Node.js/Bun and installs dependencies
 
-### Setup Action Inputs
+#### Setup Action Inputs
 
 | Input                | Description                              | Default  |
 | -------------------- | ---------------------------------------- | -------- |
@@ -60,14 +54,14 @@ See the [`examples/`](./examples) folder for sample configurations:
 | `auto-install`       | Automatically install dependencies       | `true`   |
 | `no-frozen-lockfile` | Disable frozen lockfile                  | `false`  |
 
-## Contributing
-
-Feel free to submit pull requests, create issues, or spread the word.
-
-## Acknowledgements
+### Acknowledgements
 
 This project is inspired by [sxzz/workflows](https://github.com/sxzz/workflows) by [Kevin Deng](https://github.com/sxzz). Thank you for the excellent reference implementation.
 
-## License
+### Contributing
+
+Feel free to submit pull requests, create issues, or spread the word.
+
+### License
 
 MIT &copy; [Arik Chakma](https://x.com/imarikchakma)

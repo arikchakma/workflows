@@ -7,10 +7,12 @@
     "lint": "echo skip lint",
     "typecheck": "echo skip typecheck",
     "build": "echo skip build",
-    "test": "echo skip test"
+    "test": "echo skip test",
+    "release": "bumpp && ./release.sh"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "bumpp": "^10.3.2",
     "typescript": "^5"
   }
 }
