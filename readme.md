@@ -1,11 +1,11 @@
 <div align="center">
   <h2>Workflows</h2>
-  <p>Reusable GitHub Actions workflows for publishing packages with PNPM and Bun.</p>
+  <p>A collection of reusable GitHub Actions workflows for JavaScript and TypeScript projects.</p>
 </div>
 
 ### What Does It Do?
 
-**Workflows** provides a collection of reusable GitHub Actions for releasing and publishing JavaScript/TypeScript packages. It supports both PNPM and Bun package managers, with options to publish to NPM or GitHub Packages registry.
+**Workflows** provides standardized CI/CD workflows that you can plug into any JavaScript or TypeScript repository.
 
 ```yaml
 name: Release
@@ -28,21 +28,21 @@ jobs:
     secrets: inherit
 ```
 
-### Included Workflows
+### Workflows
 
-- **Release (PNPM)**: Publish packages using PNPM to NPM registry
-- **Release (Bun)**: Publish packages using Bun to NPM registry
-- **Release (GitHub)**: Publish packages to GitHub Packages registry (supports both PNPM and Bun)
+| Workflow                                                     | Description                             |
+| ------------------------------------------------------------ | --------------------------------------- |
+| [release-pnpm.yml](./.github/workflows/release-pnpm.yml)     | Release and publish packages using PNPM |
+| [release-bun.yml](./.github/workflows/release-bun.yml)       | Release and publish packages using Bun  |
+| [release-github.yml](./.github/workflows/release-github.yml) | Publish to GitHub Packages registry     |
 
-See the [`examples/`](./examples) folder for sample configurations:
-
-- [Release (PNPM)](./examples/release-pnpm.yml)
-- [Release (Bun)](./examples/release-bun.yml)
-- [Release (GitHub Packages)](./examples/release-github.yml)
+See the [`examples/`](./examples) folder for sample configurations.
 
 ### Actions
 
-- [`setup-js/action.yml`](./setup-js/action.yml): Sets up Node.js/Bun and installs dependencies
+| Action                            | Description                                    |
+| --------------------------------- | ---------------------------------------------- |
+| [setup-js](./setup-js/action.yml) | Sets up Node.js or Bun with dependency caching |
 
 #### Setup Action Inputs
 
