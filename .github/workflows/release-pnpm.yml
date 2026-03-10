@@ -45,6 +45,7 @@ jobs:
         with:
           package-manager: pnpm
           node-version: ${{ inputs.node-version }}
+          fetch-all: ${{ inputs.github-release && 'true' || 'false' }}
 
       - name: Generate changelog
         if: inputs.github-release

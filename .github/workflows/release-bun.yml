@@ -40,6 +40,7 @@ jobs:
         with:
           package-manager: bun
           bun-version: ${{ inputs.bun-version }}
+          fetch-all: ${{ inputs.github-release && 'true' || 'false' }}
 
       - name: Generate changelog
         if: inputs.github-release

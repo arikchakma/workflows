@@ -57,6 +57,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ inputs.github-release && 0 || 1 }}
 
       - name: Setup PNPM
         if: inputs.package-manager == 'pnpm'
