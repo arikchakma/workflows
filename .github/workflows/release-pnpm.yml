@@ -33,6 +33,11 @@ on:
         required: false
         type: boolean
         default: false
+      publish-directory:
+        description: Directory to publish from (for monorepo packages)
+        required: false
+        type: string
+        default: ''
 
 jobs:
   release:
@@ -59,6 +64,7 @@ jobs:
 
       - name: Publish to NPM
         if: inputs.publish
+        working-directory: ${{ inputs.publish-directory || '.' }}
         run: pnpm ${{ inputs.recursive && '-r' || '' }} publish --access ${{ inputs.access }} --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
