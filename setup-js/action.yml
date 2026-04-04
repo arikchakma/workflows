@@ -30,7 +30,7 @@ runs:
     - uses: actions/checkout@v4
       with:
         persist-credentials: ${{ inputs.persist-credentials }}
-        fetch-depth: ${{ inputs.fetch-all == 'true' && 0 || 1 }}
+        fetch-depth: ${{ inputs.fetch-all == 'true' && '0' || '1' }}
 
     - name: Setup PNPM
       if: inputs.package-manager == 'pnpm'
